@@ -1,0 +1,163 @@
+server:
+  port: 9005
+
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/ubank?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initial-size: 1
+      max-active: 20
+      min-idle: 1
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: select 'x'
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      aop-patterns: packages
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+          db-type: mysql
+        slf4j:
+          enabled: true
+          connection-log-enabled: true
+          connection-close-after-log-enabled: true
+          connection-commit-after-log-enabled: true
+          connection-connect-after-log-enabled: true
+          connection-connect-before-log-enabled: true
+          connection-log-error-enabled: true
+          data-source-log-enabled: true
+          result-set-log-enabled: true
+          statement-log-enabled: true
+        wall:
+          enabled: true
+          db-type: mysql
+          config:
+            alter-table-allow: true
+            truncate-allow: false
+            drop-table-allow: false
+            none-base-statement-allow: false
+            update-where-none-check: true
+            select-into-outfile-allow: false
+            metadata-allow: true
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
+        principal-cookie-name: admin
+        principal-session-name: admin
+        profile-enable: true
+        session-stat-enable: true
+        session-stat-max-count: 100000
+      stat-view-servlet:
+        allow: 127.0.0.1
+        login-username: admin
+        login-password: 123456
+        url-pattern: /druid/*
+        reset-enable: true
+  jpa:
+    database: mysql
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      repositories:
+        enabled: false
+  cache:
+    type: redis
+  redis:
+    database: 1
+    host: localhost
+    password: 123456
+    port: 6379
+    jedis:
+      pool:
+        max-idle: 100
+        min-idle: 100
+        max-active: 8
+        max-wait: -1s
+    timeout: 60s
+  aop:
+    proxy-target-class: true
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: serve_default
+          uri: http://localhost:9005/index.html
+          predicates:
+            - Path=/
+        - id: serve_swealth
+          uri: lb://swealth-server
+          predicates:
+            - Path=/swealth/**
+          filters:
+            - StripPrefix=1
+        - id: serve_sstudent
+          uri: lb://sstudent-server
+          predicates:
+            - Path=/sstudent/**
+          filters:
+            - StripPrefix=1
+        - id: serve_schat
+          uri: lb://schat-server
+          predicates:
+            - Path=/schat/**
+          filters:
+            - StripPrefix=1
+        - id: serve_schat_topic
+          uri: lb:ws://schat-server
+          predicates:
+            - Path=/schat/topic/**
+          filters:
+            - StripPrefix=1
+        - id: serve_schat_app
+          uri: lb:ws://schat-server
+          predicates:
+            - Path=/schat/app/**
+          filters:
+            - StripPrefix=1
+        - id: serve_schat_user
+          uri: lb:ws://schat-server
+          predicates:
+            - Path=/schat/user/**
+          filters:
+            - StripPrefix=1
+
+#Hystrix的fallbackcmd的时间
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+feign:
+  schat:
+    url: http://localhost:9090
+  swealth:
+    url: http://localhost:7070
+  sstudent:
+    url: http://localhost:9095
+
+my:
+  security:
+    defaultLoginFullPage: http://localhost:9005/#/auth/login
+    maxVisitNumber: 1000
+    blacklistExpireTime: 604800000
+

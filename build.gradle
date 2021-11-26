@@ -1,0 +1,44 @@
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.springframework.boot'
+}
+dependencies {
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation("org.springframework.cloud:spring-cloud-config-client")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("io.github.openfeign:feign-okhttp:${feignOkhttpVersion}")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:${bucket4jCoreVersion}")
+
+    implementation("javax.servlet:javax.servlet-api:3.1.0")
+    implementation("io.jsonwebtoken:jjwt-api:${jwtVersion}")
+    implementation("io.jsonwebtoken:jjwt-impl:${jwtVersion}")
+    implementation("io.jsonwebtoken:jjwt-jackson:${jwtVersion}")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation("com.alibaba:fastjson:1.2.52")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("mysql:mysql-connector-java:${mysqlVersion}")
+    implementation("com.alibaba:druid-spring-boot-starter:${druidVersion}")
+
+    implementation("net.coobird:thumbnailator:0.4.8")
+    implementation("org.lionsoul:ip2region:1.7.2")
+
+    implementation("org.apache.httpcomponents:httpclient:4.5.10")
+    implementation("org.apache.httpcomponents:httpmime:4.5.10")
+
+    // submail短信平台依赖包
+    implementation("commons-logging:commons-logging:1.2")
+    implementation("commons-collections:commons-collections:3.2.2")
+    implementation("net.sf.ezmorph:ezmorph:1.0.6")
+    implementation("net.sf.json-lib:json-lib:2.4:jdk15")
+}
+
+
+application {
+    mainClassName = 'com.myworld.cgate.CgateSqlApplicationKt'
+}
